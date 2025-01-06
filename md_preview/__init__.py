@@ -27,6 +27,7 @@ class MarkdownPanel(Gtk.Box):
         # self.dark_mode_enabled = False
         self.show_all()
 
+
 class MarkdownPanelUtils():
     def __init__(self):
         self.webview = WebKit2.WebView()
@@ -37,6 +38,10 @@ class MarkdownPanelUtils():
         # Handler
         self._dark_mode_handler = None
         self._to_pdf_handler = None
+
+        # "Noto Sans CJK"
+        # WebKit2.Settings.set_default_font_family(self.webview.get_settings(), "Noto Sans CJK")
+        # print(WebKit2.Settings.get_default_font_family(self.webview.get_settings()))
 
     def add_dark_mode_button_func(self, func):
         self._dark_mode_handler = self.panel.dark_mode_button.connect("clicked", func)
@@ -172,11 +177,19 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
         js_scroll = f"""
         (function() {{
             const lineNumber = {line_number};
-            const targetElement = Array.from(document.querySelectorAll('[data-line-start]')).find(el => {{
+            // const targetElement = Array.from(document.querySelectorAll('[data-line-start]')).find(el => {{
+                // const start = Number(el.getAttribute('data-line-start'));
+                // const end = Number(el.getAttribute('data-line-end') || start);
+                // return lineNumber >= start && lineNumber < end;
+            // }});
+
+            const targetElements = Array.from(document.querySelectorAll('[data-line-start]'))
+            .filter(el => {{
                 const start = Number(el.getAttribute('data-line-start'));
                 const end = Number(el.getAttribute('data-line-end') || start);
                 return lineNumber >= start && lineNumber < end;
             }});
+            const targetElement = targetElements.pop(); // 获取最后一个匹配项
 
             if (targetElement) {{
                 console.log(targetElement)

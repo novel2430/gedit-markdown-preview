@@ -3,6 +3,10 @@ import json
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path) + "/deps"
+font_directory = os.path.dirname(current_file_path) + "/fonts"
+noto_sans = "{}/NotoSans.ttf".format(font_directory)
+noto_sans_sc = "{}/NotoSansSC.ttf".format(font_directory)
+noto_sans_tc = "{}/NotoSansTC.ttf".format(font_directory)
 
 start_page = json.dumps("""
 # Markdown Preview!
@@ -10,15 +14,42 @@ start_page = json.dumps("""
 - 🍺 Wish u have a good day!
 """)
 
+font_faces = f"""
+@font-face {{
+  font-family: 'Noto Sans';
+  src: url('{noto_sans}') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}}
+
+@font-face {{
+  font-family: 'Noto Sans SC';
+  src: url('{noto_sans_sc}') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}}
+
+@font-face {{
+  font-family: 'Noto Sans TC';
+  src: url('{noto_sans_tc}') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}}
+"""
+
 html_style = f"""
 <style>
+    {font_faces}
     body {{
-      font-family: Arial, sans-serif;
+      font-family: "Noto Sans TC","Noto Sans SC","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji";
       margin: 0px;
       transition: background-color 0.3s, color 0.3s;
     }}
     .dark-mode {{
       background-color: #1e1e1e;
+    }}
+    .preview.markdown-body {{
+      font-family: "Noto Sans TC","Noto Sans SC","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     }}
     .preview {{
       padding: 20px;
@@ -64,7 +95,6 @@ html_style = f"""
 html_body = f"""
 <body>
     <div id="preview" class="preview markdown-body"></div>
-
     <script src="file://{current_directory}/markdown-it.min.js"></script>
     <script src="file://{current_directory}/highlight.min.js"></script>
     <script>
@@ -177,7 +207,6 @@ html = f"""
     <meta charset="UTF-8">
     <title>Markdown Preview</title>
     <link id="theme-stylesheet" rel="stylesheet" href="file://{current_directory}/github-markdown-light.css">
-    <link rel="stylesheet" href="file://{current_directory}/github.min.css" id="hljs-style">
 </head>
 {html_style}
 {html_body}
