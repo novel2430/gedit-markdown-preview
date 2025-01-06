@@ -134,7 +134,7 @@ html_body = f"""
             }})
             .join('\\n');
             
-          return `<pre><code class="hljs ${{lang}}">${{final}}</code></pre>`;
+          return `<pre><code class="hljs">${{final}}</code></pre>`;
         }};
         md.renderer.rules.html_block = (tokens, idx) => {{
             const token = tokens[idx];
@@ -209,6 +209,7 @@ html = f"""
     <meta charset="UTF-8">
     <title>Markdown Preview</title>
     <link id="theme-stylesheet" rel="stylesheet" href="file://{current_directory}/github-markdown-light.css">
+    <link rel="stylesheet" href="file://{current_directory}/github.min.css" id="hljs-style">
 </head>
 {html_style}
 {html_body}
