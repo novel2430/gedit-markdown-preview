@@ -41,7 +41,7 @@ This plugin adds Markdown preview functionality to Gedit, providing a convenient
 
 ## Requirements
 
-- Gedit 3.37 or later.
+- Gedit 47.0 or later.
 - Python 3.
 - Required dependencies:
   - `markdown`
