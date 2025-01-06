@@ -10,8 +10,10 @@ noto_sans_tc = "{}/NotoSansTC.ttf".format(font_directory)
 
 start_page = json.dumps("""
 # Markdown Preview!
-- ☕ Open Some markdown file ...
+- ☕ Open a markdown file ...
 - 🍺 Wish u have a good day!
+- 🚀 Repo : https://github.com/novel2430/gedit-markdown-preview
+- 👋 Author : Novel2430
 """)
 
 font_faces = f"""
