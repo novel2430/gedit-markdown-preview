@@ -39,10 +39,6 @@ class MarkdownPanelUtils():
         self._dark_mode_handler = None
         self._to_pdf_handler = None
 
-        # "Noto Sans CJK"
-        # WebKit2.Settings.set_default_font_family(self.webview.get_settings(), "Noto Sans CJK")
-        # print(WebKit2.Settings.get_default_font_family(self.webview.get_settings()))
-
     def add_dark_mode_button_func(self, func):
         self._dark_mode_handler = self.panel.dark_mode_button.connect("clicked", func)
 
