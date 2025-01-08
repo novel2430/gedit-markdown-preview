@@ -17,14 +17,11 @@ class MarkdownPanel(Gtk.Box):
         self.pack_start(toolbar, expand=False, fill=True, padding=2)
         # Dark mode Btn
         self.dark_mode_button = Gtk.Button(label="Mode 🌕")
-        # self.dark_mode_button.connect("clicked", self.toggle_dark_mode)
         toolbar.pack_start(self.dark_mode_button, expand=False, fill=False, padding=0)
         # output pdf
         self.export_pdf_button = Gtk.Button(label="To PDF 📄")
-        # export_pdf_button.connect("clicked", self.export_to_pdf)
         toolbar.pack_start(self.export_pdf_button, expand=False, fill=False, padding=0)
 
-        # self.dark_mode_enabled = False
         self.show_all()
 
 
@@ -76,7 +73,6 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
         self._markdown_panel_util = None
         self._current_hash = None
         self._is_dark = False
-        # self._current_doc = None
         # Handler
         self._active_tab_handler = None
         self._cursor_move_handler_map = {}
@@ -171,27 +167,7 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
     def _sync_scroll(self, cursor):
         line_number = cursor.get_line()
         js_scroll = f"""
-        (function() {{
-            const lineNumber = {line_number};
-            // const targetElement = Array.from(document.querySelectorAll('[data-line-start]')).find(el => {{
-                // const start = Number(el.getAttribute('data-line-start'));
-                // const end = Number(el.getAttribute('data-line-end') || start);
-                // return lineNumber >= start && lineNumber < end;
-            // }});
-
-            const targetElements = Array.from(document.querySelectorAll('[data-line-start]'))
-            .filter(el => {{
-                const start = Number(el.getAttribute('data-line-start'));
-                const end = Number(el.getAttribute('data-line-end') || start);
-                return lineNumber >= start && lineNumber < end;
-            }});
-            const targetElement = targetElements.pop(); // 获取最后一个匹配项
-
-            if (targetElement) {{
-                console.log(targetElement)
-                targetElement.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
-            }}
-        }})();
+            window.synCursor({line_number})
         """
         self._markdown_panel_util.run_js(js_scroll)
 
@@ -229,8 +205,7 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
             # Markdown
             if self._is_buffer_change():
                 self._markdown_to_view()  
-            else:
-                self._sync_scroll(cursor)
+            self._sync_scroll(cursor)
         elif current_type == 2:
             # HTML
             pass

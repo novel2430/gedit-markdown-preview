@@ -195,6 +195,23 @@ html_body = f"""
           }}
         }};
 
+        window.synCursor = function (line_number) {{
+            const lineNumber = line_number;
+
+            const targetElements = Array.from(document.querySelectorAll('[data-line-start]'))
+            .filter(el => {{
+                const start = Number(el.getAttribute('data-line-start'));
+                const end = Number(el.getAttribute('data-line-end') || start);
+                return lineNumber >= start && lineNumber < end;
+            }});
+            const targetElement = targetElements.pop();
+
+            if (targetElement) {{
+                console.log(targetElement)
+                targetElement.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+            }}
+        }};
+
         window.renderMarkdown({start_page});
 
   </script>
