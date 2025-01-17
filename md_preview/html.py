@@ -99,6 +99,7 @@ html_body = f"""
     <div id="preview" class="preview markdown-body"></div>
     <script src="file://{current_directory}/markdown-it.min.js"></script>
     <script src="file://{current_directory}/highlight.min.js"></script>
+
     <script>
         const md = window.markdownit({{
           html:         true,

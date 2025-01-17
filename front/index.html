@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Markdown Theme Toggle</title>
+  <link id="theme-stylesheet" rel="stylesheet" href="">
+  <link id="hljs-style" rel="stylesheet" href="">
+</head>
+<style>
+  body {
+    margin: 0px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  .dark-mode {
+    background-color: #1e1e1e;
+  }
+  .preview {
+    padding: 20px;
+    background-color: white;
+    color: black;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+  }
+  .preview.dark-mode {
+    background-color: #1e1e1e;
+    color: #c9d1d9;
+    border-color: #444;
+  }
+  .preview.dark-mode pre {
+    background-color: #2d2d2d;
+    border-color: #555;
+  }
+  .preview pre {
+    padding: 10px;
+    overflow: auto;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin: 10px 0;
+    position: relative;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #8c8c8c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  .copy-btn:hover {
+    background: #585859;
+  }
+</style>
+<body>
+  <button id="toggle-theme">Toggle Theme</button>
+  <div id="app" class="preview markdown-body"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
+

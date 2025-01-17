@@ -2,8 +2,12 @@ from gi.repository import GObject, Gtk, Gedit, WebKit2, Tepl
 
 import json
 import hashlib
+import os
 
 from .html import html
+
+current_file_path = os.path.abspath(__file__)
+current_directory = os.path.dirname(current_file_path)
 
 class MarkdownPanel(Gtk.Box):
     __gtype_name__ = "MarkdownPanel"
@@ -27,9 +31,12 @@ class MarkdownPanel(Gtk.Box):
 
 class MarkdownPanelUtils():
     def __init__(self):
+        settings = WebKit2.Settings()
+        settings.set_enable_developer_extras(True)  # 开启开发工具
+        # settings.set_allow_file_access_from_file_urls(True)
+
         self.webview = WebKit2.WebView()
-        setting = self.webview.get_settings()
-        self.webview.get_settings().set_enable_developer_extras(True)
+        self.webview.set_settings(settings)
         self.initialize_html()
         self.panel = MarkdownPanel(self.webview)
         # Handler
@@ -48,6 +55,7 @@ class MarkdownPanelUtils():
 
     def initialize_html(self):
         self.webview.load_html(html, "file:///")
+        # self.webview.load_uri("file://{}/index.html".format(current_directory))
 
     def update_webview(self, content):
         if content:
