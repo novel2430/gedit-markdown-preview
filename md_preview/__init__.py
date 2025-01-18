@@ -32,8 +32,7 @@ class MarkdownPanel(Gtk.Box):
 class MarkdownPanelUtils():
     def __init__(self):
         settings = WebKit2.Settings()
-        settings.set_enable_developer_extras(True)  # 开启开发工具
-        # settings.set_allow_file_access_from_file_urls(True)
+        settings.set_enable_developer_extras(True)  # Development
 
         self.webview = WebKit2.WebView()
         self.webview.set_settings(settings)
@@ -55,13 +54,11 @@ class MarkdownPanelUtils():
 
     def initialize_html(self):
         self.webview.load_html(html, "file:///")
-        # self.webview.load_uri("file://{}/index.html".format(current_directory))
 
     def update_webview(self, content):
         if content:
             safe_markdown = json.dumps(content)
             script = f"""
-                console.log("Update Markdown")
                 window.updateContent({safe_markdown})
             """
             self.webview.evaluate_javascript(script, -1, None, None, None, None, None)
