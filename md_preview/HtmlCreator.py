@@ -285,7 +285,7 @@ class HtmlCreator:
                 {set_css_code}
                 {set_dark_code}
 
-                window.renderMarkdown({start_page});
+                window.renderMarkdown({self.start_page});
           </script>
         </body>
         """
