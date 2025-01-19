@@ -4,10 +4,15 @@ import json
 import hashlib
 import os
 
-from .html import html
+from .HtmlCreator import HtmlCreator
+from .SettingsPage import SettingsPage
+from .Configuration import Configuration
 
 current_file_path = os.path.abspath(__file__)
 current_directory = os.path.dirname(current_file_path)
+
+light_mode_label = "Mode 🌕"
+dark_mode_label = "Mode 🌑"
 
 class MarkdownPanel(Gtk.Box):
     __gtype_name__ = "MarkdownPanel"
@@ -20,11 +25,14 @@ class MarkdownPanel(Gtk.Box):
         toolbar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=5, halign=Gtk.Align.END)
         self.pack_start(toolbar, expand=False, fill=True, padding=2)
         # Dark mode Btn
-        self.dark_mode_button = Gtk.Button(label="Mode 🌕")
+        self.dark_mode_button = Gtk.Button(label=light_mode_label)
         toolbar.pack_start(self.dark_mode_button, expand=False, fill=False, padding=0)
         # output pdf
         self.export_pdf_button = Gtk.Button(label="To PDF 📄")
         toolbar.pack_start(self.export_pdf_button, expand=False, fill=False, padding=0)
+        # Settings
+        self.settings_button = Gtk.Button(label="Settings ⚙️")
+        toolbar.pack_start(self.settings_button, expand=False, fill=False, padding=0)
 
         self.show_all()
 
@@ -33,27 +41,41 @@ class MarkdownPanelUtils():
     def __init__(self):
         settings = WebKit2.Settings()
         settings.set_enable_developer_extras(True)  # Development
-
         self.webview = WebKit2.WebView()
         self.webview.set_settings(settings)
-        self.initialize_html()
         self.panel = MarkdownPanel(self.webview)
         # Handler
         self._dark_mode_handler = None
         self._to_pdf_handler = None
+        self._settings_handler = None
+        self._webview_load_change_handler = None
+
+    def _add_click_func_to_btn(self, btn, func):
+        return btn.connect("clicked", func)
+    
+    def _remove_click_func_from_btn(self, btn, handler):
+        btn.disconnect(handler)
 
     def add_dark_mode_button_func(self, func):
-        self._dark_mode_handler = self.panel.dark_mode_button.connect("clicked", func)
+        self._dark_mode_handler = self._add_click_func_to_btn(self.panel.dark_mode_button, func)
 
     def add_to_pdf_button_func(self, func):
-        self._to_pdf_handler = self.panel.export_pdf_button.connect("clicked", func)
+        self._to_pdf_handler =  self._add_click_func_to_btn(self.panel.export_pdf_button, func)
+
+    def add_to_settings_button_func(self, func):
+        self._settings_handler =  self._add_click_func_to_btn(self.panel.settings_button, func)
+
+    def add_to_webview_load_change_func(self, func):
+        self._webview_load_change_handler = self.webview.connect("load-changed", func)
 
     def disconnect_btns_signal(self):
-        self.panel.dark_mode_button.disconnect(self._dark_mode_handler)
-        self.panel.export_pdf_button.disconnect(self._to_pdf_handler)
+        self._remove_click_func_from_btn(self.panel.dark_mode_button, self._dark_mode_handler)
+        self._remove_click_func_from_btn(self.panel.export_pdf_button, self._to_pdf_handler)
+        self._remove_click_func_from_btn(self.panel.settings_button, self._settings_handler)
+        self.webview.disconnect(self._webview_load_change_handler)
 
-    def initialize_html(self):
-        self.webview.load_html(html, "file:///")
+    def initialize_html(self, html_page):
+        self.webview.load_html(html_page, "file:///")
 
     def update_webview(self, content):
         if content:
@@ -65,6 +87,9 @@ class MarkdownPanelUtils():
 
     def run_js(self, script):
         self.webview.evaluate_javascript(script, -1, None, None, None, None, None)
+
+    def init_dark_mode_label(self, name):
+        self.panel.dark_mode_button.set_label(name)
 
 
 
@@ -78,6 +103,9 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
         self._markdown_panel_util = None
         self._current_hash = None
         self._is_dark = False
+        self._is_startup = True
+        self._configuration = Configuration()
+        self._html_creator = HtmlCreator()
         # Handler
         self._active_tab_handler = None
         self._cursor_move_handler_map = {}
@@ -86,7 +114,7 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
     def do_activate(self):
         self._add_side_panel()
         self._connect_signals()
-        self._markdown_to_view()
+        self._init_webview_page()
 
     def do_deactivate(self):
         self._remove_side_panel()
@@ -125,6 +153,23 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
         if self._panel:
             Tepl.Panel.remove(self.window.get_side_panel(), self._panel)
 
+    def _init_webview_page(self):
+        font_path = None
+        font_type = None
+        css_path = None
+        if self._configuration.load_state:
+            if self._configuration.is_dark:
+                self._markdown_panel_util.panel.dark_mode_button.set_label(dark_mode_label)
+                self._is_dark = True
+            if self._configuration.font_path and self._configuration.font_path != "default":
+                font_path = json.dumps(self._configuration.font_path)
+                font_type = json.dumps(self._get_font_format(self._configuration.font_path))
+            if self._configuration.css_path and self._configuration.css_path != "default":
+                css_path = json.dumps(self._configuration.css_path)
+
+        html_page = self._html_creator.build_html(font_path=font_path, font_type=font_type, css_path=css_path, is_dark=self._is_dark)
+        self._markdown_panel_util.initialize_html(html_page=html_page)
+
     def _add_cursor_connet_to_doc(self, document):
         handler = document.connect('tepl-cursor-moved', self._on_cursor_change)
         self._cursor_move_handler_map.update({document: handler})
@@ -144,6 +189,8 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
         if self._markdown_panel_util:
             self._markdown_panel_util.add_dark_mode_button_func(self.toggle_dark_mode)
             self._markdown_panel_util.add_to_pdf_button_func(self.export_to_pdf)
+            self._markdown_panel_util.add_to_settings_button_func(self.open_settings_page)
+            self._markdown_panel_util.add_to_webview_load_change_func(self.webview_load_chage)
 
 
     def _get_doc_type(self):
@@ -176,21 +223,84 @@ class MarkdownPreview(GObject.Object, Gedit.WindowActivatable):
         """
         self._markdown_panel_util.run_js(js_scroll)
 
-    def toggle_dark_mode(self, button):
-        js = """
-            window.toggleDark()
-        """
-        self._markdown_panel_util.run_js(js)
-        if self._is_dark:
-            button.set_label("Mode 🌕")
-            self._is_dark = False
+    def _get_font_format(self, font_path):
+        font_ext = os.path.splitext(font_path)[1].lower()
+        if font_ext == '.ttf':
+            return 'truetype'
+        elif font_ext == '.otf':
+            return 'opentype'
+        elif font_ext == '.woff':
+            return 'woff'
+        elif font_ext == '.woff2':
+            return 'woff2'
         else:
-            button.set_label("Mode 🌑")
+            return None
+
+    def toggle_dark_mode(self, button):
+        js_dark = """
+            window.setDarkMode(true)
+        """
+        js_light = """
+            window.setDarkMode(false)
+        """
+        if self._is_dark:
+            self._markdown_panel_util.run_js(js_light)
+            button.set_label(light_mode_label)
+            self._is_dark = False
+            self._configuration.is_dark = False
+        else:
+            self._markdown_panel_util.run_js(js_dark)
+            button.set_label(dark_mode_label)
             self._is_dark = True
+            self._configuration.is_dark = True
+        self._configuration.save_to_disk()
 
     def export_to_pdf(self, button):
         webkit_print_op = WebKit2.PrintOperation.new(self._markdown_panel_util.webview)
         webkit_print_op.run_dialog()
+
+    def open_settings_page(self, button):
+        settingPage = SettingsPage(parent=self.window, func=self.apply_setting)
+        settingPage.show_all()
+
+    def webview_load_chage(self, webview, load_event):
+        if load_event == WebKit2.LoadEvent.FINISHED and self._is_startup:
+            self._markdown_to_view()
+            self._is_startup = False
+        
+    def apply_setting(self, css_path, font_path, css_default, font_default):
+        if css_default == True:
+            js = f"""
+                window.setCSSDefault()
+            """
+            self._markdown_panel_util.run_js(js)
+            self._configuration.css_path = "default"
+
+        if font_default == True:
+            js = f"""
+                window.setFontDefault()
+            """
+            self._markdown_panel_util.run_js(js)
+            self._configuration.font_path = "default"
+
+        if os.path.exists(css_path) and css_default == False:
+            path = json.dumps(css_path)
+            js = f"""
+                window.updateCSS({path})
+            """
+            self._markdown_panel_util.run_js(js)
+            self._configuration.css_path = css_path
+
+        if os.path.exists(font_path) and font_default == False:
+            path = json.dumps(font_path)
+            font_type = json.dumps(self._get_font_format(font_path))
+            js = f"""
+                window.updateFont({path}, {font_type})
+            """
+            self._markdown_panel_util.run_js(js)
+            self._configuration.font_path = font_path
+
+        self._configuration.save_to_disk()
 
     def _is_buffer_change(self):
         cur_cash = self._get_current_hash()
