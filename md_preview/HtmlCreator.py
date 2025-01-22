@@ -8,15 +8,16 @@ noto_sans = "{}/NotoSans.ttf".format(font_directory)
 noto_sans_sc = "{}/NotoSansSC.ttf".format(font_directory)
 noto_sans_tc = "{}/NotoSansTC.ttf".format(font_directory)
 
+start_page = json.dumps("""
+# Markdown Preview!
+- ☕ Open a markdown file ...
+- 🍺 Wish u have a good day!
+- 🚀 Repo : https://github.com/novel2430/gedit-markdown-preview
+- 👋 Author : Novel2430
+""")
+
 class HtmlCreator:
     def __init__(self) -> None:
-        self.start_page = json.dumps("""
-            # Markdown Preview!
-            - ☕ Open a markdown file ...
-            - 🍺 Wish u have a good day!
-            - 🚀 Repo : https://github.com/novel2430/gedit-markdown-preview
-            - 👋 Author : Novel2430
-            """)
         self.font_faces = f"""
             @font-face {{
               font-family: 'Noto Sans';
@@ -285,7 +286,7 @@ class HtmlCreator:
                 {set_css_code}
                 {set_dark_code}
 
-                window.renderMarkdown({self.start_page});
+                window.renderMarkdown({start_page});
           </script>
         </body>
         """
