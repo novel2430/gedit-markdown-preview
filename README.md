@@ -5,6 +5,14 @@ This plugin adds Markdown preview functionality to Gedit, providing a convenient
 > This plugin was developed because the code changes a lot in Gedit after upgrading to `Gedit 47` caused the previous Markdown preview plugin to no longer function properly. 
 
 ## Screenshots
+### Cursor Synchronization
+<video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/cursor.mp4" width="80%" controls></video>
+### Dark Mode
+<!--- <video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/dark.mp4" width="80%" controls></video> --->
+### Custom Fonts
+<!--- <video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/font.mp4" width="80%" controls></video> --->
+### Custom CSS Theme
+<!--- <video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/css.mp4" width="80%" controls></video> --->
 
 ## Features
 
