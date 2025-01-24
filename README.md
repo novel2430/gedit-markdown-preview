@@ -19,6 +19,7 @@ This plugin adds Markdown preview functionality to Gedit, providing a convenient
 ![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/dark.png?raw=true)
 ### Cursor Synchronization
 <video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/cursor.mp4" width="90%" controls></video>
+[tt](https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/cursor.mp4)
 ### Dark Mode
 <video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/dark.mp4" width="90%" controls></video>
 ### Custom Fonts
