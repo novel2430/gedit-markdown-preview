@@ -18,14 +18,13 @@ This plugin adds Markdown preview functionality to Gedit, providing a convenient
 ![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/light.png?raw=true)
 ![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/dark.png?raw=true)
 ### Cursor Synchronization
-<video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/cursor.mp4" width="90%" controls></video>
-![](https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/cursor.mp4)
+![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/cursor.gif?raw=true)
 ### Dark Mode
-<video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/dark.mp4" width="90%" controls></video>
-### Custom Fonts
-<video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/font.mp4" width="90%" controls></video>
+![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/dark.gif?raw=true)
 ### Custom CSS Theme
-<video src="https://github.com/novel2430/gedit-markdown-preview/raw/refs/heads/main/res/css.mp4" width="90%" controls></video>
+![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/css.gif?raw=true)
+### Custom Fonts
+![img](https://github.com/novel2430/gedit-markdown-preview/blob/main/res/font.gif?raw=true)
 
 ## Requirements
 ### Dependencies
