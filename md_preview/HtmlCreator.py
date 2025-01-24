@@ -264,6 +264,9 @@ class HtmlCreator:
                         .preview.markdown-body {{
                           font-family: "Custom Font","Noto Sans TC","Noto Sans SC","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji";
                         }}
+                        .markdown-body code {{
+                          font-family: "Custom Font",ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+                        }}
                     `;
                     document.head.appendChild(style);
                 }};
@@ -277,6 +280,9 @@ class HtmlCreator:
                         }}
                         .preview.markdown-body {{
                           font-family: "Noto Sans TC","Noto Sans SC","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+                        }}
+                        .markdown-body code {{
+                          font-family: ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
                         }}
                     `;
                     document.head.appendChild(style);
